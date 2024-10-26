@@ -5,21 +5,26 @@ using RealEstate.Services;
 
 namespace RealEstate.Pages
 {
-    public class IndexModel : PageModel
+    public class AddHomeModel : PageModel
     {
         private readonly HomeService _homeService;
-        public List<Home> Homes { get; private set; }
-        public double ThresholdPrice { get; set; }
 
-        public IndexModel(HomeService homeService)
+        public AddHomeModel(HomeService homeService)
         {
             _homeService = homeService;
         }
 
+        [BindProperty]
+        public Home NewHome { get; set; }
+
         public void OnGet()
         {
-            Homes = _homeService.GetHomes();
-            ThresholdPrice = 400000;
+        }
+
+        public IActionResult OnPost() 
+        {
+            _homeService.AddHome(NewHome);
+            return RedirectToPage("Index");
         }
     }
 }
