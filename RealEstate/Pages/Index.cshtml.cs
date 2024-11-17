@@ -9,7 +9,6 @@ namespace RealEstate.Pages
     {
         private readonly HomeService _homeService;
         public List<Home> Homes { get; private set; }
-        public double ThresholdPrice { get; set; }
 
         public IndexModel(HomeService homeService)
         {
@@ -18,8 +17,14 @@ namespace RealEstate.Pages
 
         public void OnGet()
         {
-            Homes = _homeService.GetHomes();
-            ThresholdPrice = 400000;
+            try
+            {
+                Homes = _homeService.GetHomes();
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error fetching home from the database: {ex.Message}. Refresh the page.";
+            }
         }
     }
 }

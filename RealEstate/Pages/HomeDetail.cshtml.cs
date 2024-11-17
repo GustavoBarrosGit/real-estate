@@ -14,6 +14,7 @@ namespace RealEstate.Pages
             _homeService = homeService;
         }
 
+        [BindProperty]
         public Home Home { get; set; }
 
         public IActionResult OnGet(int id)
@@ -26,5 +27,43 @@ namespace RealEstate.Pages
         {
             return _homeService.GetHomeById(id);
         }
+
+        public IActionResult OnPostUpdate()
+        {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+            try
+            {
+                _homeService.UpdateHome(Home);
+                TempData["SuccessMessage"] = "Home updated successfully!";
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error updating home: {ex.Message}";
+            }
+
+            return RedirectToPage("/Index");
+        }
+
+        public IActionResult OnPostDelete(int id) 
+        {
+            try
+            {
+                _homeService.DeleteHome(id);
+                TempData["SuccessMessage"] = "Home deleted successfully!";
+                return new OkResult();
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error deleting home: {ex.Message}";
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+
+        
     }
 }

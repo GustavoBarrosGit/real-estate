@@ -17,14 +17,24 @@ namespace RealEstate.Pages
         [BindProperty]
         public Home NewHome { get; set; }
 
-        public void OnGet()
-        {
-        }
-
         public IActionResult OnPost() 
         {
-            _homeService.AddHome(NewHome);
-            return RedirectToPage("Index");
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+            try
+            {
+                _homeService.AddHome(NewHome);
+                TempData["SuccessMessage"] = "Home added successfully!";
+                return RedirectToPage("Index");
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error adding home: {ex.Message}";
+                return Page();
+            }
         }
     }
 }
